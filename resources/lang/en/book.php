@@ -4,5 +4,6 @@ return
     'filenotfound' => 'upload images not found',
     'booknotfound' => 'book not found',
     'datdeleted' => 'datadeletedsucessfully',
-    'imagesempty' => 'book images is empty',
+    'imagenotfound' => 'book images is notfound',
+    'imagedeleted' => 'image deleted succesfully',
 ];

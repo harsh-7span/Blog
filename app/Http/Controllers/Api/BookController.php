@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\Book\Upsert;
+use App\Http\Requests\Book\images;
 use App\Traits\ApiResponser;
 use App\Services\BookService;
 use App\Http\Resources\Book\Resource as BookResource;
-use App\Http\Resources\collection as BookCollection;
+use App\Http\Resources\Book\collection as BookCollection;
 
 class BookController extends Controller
 {
@@ -39,6 +40,11 @@ class BookController extends Controller
     public function destroy($id)
     {
         $data = $this->bookService->delete($id);
+        return isset($data['errors']) ? $this->error($data) :  $this->success($data, 200);
+    }
+    public function images($id,images $request)
+    {
+        $data = $this->bookService->images($id,$request->all());
         return isset($data['errors']) ? $this->error($data) :  $this->success($data, 200);
     }
 }

@@ -25,14 +25,9 @@ class UserService
             'email' => $inputs['email'],
             'password' => Hash::make($inputs['password']),
         ];
-
-        if(!isset($inputs['agree_terms']))
-        {
-            $data['errors']['agreeterm'] = __('user.agreeterm');
-            return $data;
-        }
-        
         $user = $this->userObj->create($data);
+
+        
         return $user;
     }
     public function login($inputs)
@@ -42,12 +37,12 @@ class UserService
         if($user)
         {
             if (!\Hash::check($inputs['password'], $user->password)) {
-                $data['errors']['user'] = __('user.credentialsnotmatch');
+                $data['errors']['user'][] = __('user.credentialsnotmatch');
                 return $data;
             }
         }
         else {
-            $data['errors']['user'] = __('user.usernotfound');
+            $data['errors']['user'][] = __('user.usernotfound');
             return $data;
         }
 

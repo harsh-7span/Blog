@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Book;
 
 class Image extends Model
@@ -10,6 +11,11 @@ class Image extends Model
     protected $fillable = [
         'book_id','image',
     ];
+
+    public function getImageAttribute($value)
+    {
+        return Storage::url($value);    
+    }
     
     public function book()
     {

@@ -32,7 +32,7 @@ class signup extends FormRequest
             'name'  => 'required|max:20',
             'password' => 'required|min:8|confirmed',
             'email' => 'required|email|max:255|unique:users,email,id',
-            'agree_terms' => 'required',
+            'agree_terms' => 'required|in:1,0 else',
         ];
         return $rules;
     }

@@ -22,9 +22,9 @@ class Resource extends JsonResource
         $data['name'] = $this->name;
         foreach($this->images as $images)
         {
-            $data['images'][] = Storage::path($images['image']);    
+            $data['images'][] =  $images['image'];    
         }
-        $data['author'] = new UserResource($this->whenLoaded('user'));
+        $data['author'] = new UserResource($this->user);
         return $data;
     }
 }
