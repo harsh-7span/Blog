@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Image;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class Book extends Model
 {

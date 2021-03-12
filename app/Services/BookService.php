@@ -23,13 +23,12 @@ class BookService
     }
     public function collection($input = null)
     {
-        if (!empty($input)) {
+        if (!empty($input['name'])) {
             $books = $this->bookObj->with(['images', 'user'])->where('name', 'like', '%' . $input['name'] . '%')->paginate(5);
-            return $books;
         } else {
             $books = $this->bookObj->with(['images', 'user'])->paginate(5);
-            return $books;
         }
+        return $books;
     }
     public function store($input = null)
     {
@@ -38,7 +37,7 @@ class BookService
         foreach ($input['image'] as $image) {
             $images = new Image();
             $file =  $image->getClientOriginalName();
-            $image->move(public_path().'/upload',$file);
+            $image->move(public_path() . '/upload', $file);
             $images->image = $file;
             $images->book_id = $book->id;
             $images->save();
@@ -49,14 +48,14 @@ class BookService
     {
         $book = $this->bookObj->with('images')->find($id);
         if ($book == null) {
-            $data['errors']['book'][] =  __('book.booknotfound');
+            $data['errors']['book'][] =  __('book.bookNotFound');
             return $data;
         }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
                 $images = new Image();
                 $file =  $image->getClientOriginalName();
-                $image->move(public_path().'/upload',$file);
+                $image->move(public_path() . '/upload', $file);
                 $images->image = $file;
                 $images->book_id = $book->id;
                 $images->save();
@@ -65,38 +64,55 @@ class BookService
         $book->update($input);
         return $book->where('id', $book->id)->with(['images', 'user'])->first();
     }
+    public function show($id)
+    {
+       $book =$this->bookObj->where('id', $id)->with(['images', 'user'])->first();
+       if($book == null)
+       {
+        $data['errors']['book'][] =  __('book.bookNotFound');
+        return $data;
+       }
+       return $book;
+    }
     public function delete($id)
     {
         $book = $this->bookObj->where('id', $id)->with(['images', 'user'])->first();
 
         if ($book == null) {
-            $data['errors']['book'][] =  __('book.booknotfound');
+            $data['errors']['book'][] =  __('book.bookNotFound');
+            return $data;
+        }
+        if ($book->images == null) {
+            $data['errors']['imagenotfound'][] =  __('book.imageNotFound');
             return $data;
         }
         foreach ($book->images as $image) {
-            $images =  $image->delete();
             Storage::disk('public')->delete($image->image);
+            $images =  $image->delete();
         }
         $book =  $book->delete();
         if ($book == true && $images == true) {
-            return $data['message']['book'][] =  __('book.datdeleted');
+            return $data['message']['book'][] =  __('book.dataDeleted');
         }
     }
-    public function images($id, $input)
+    public function removeImage($id, $input)
     {
         $book = $this->bookObj->with('images')->find($id);
+        if ($book->images) {
+            $data['errors']['imagenotfound'] =  __('book.imageNotFound');
+            return $data;
+        }
         foreach ($book->images as $images) {
             if ($images->id != $input['image_id']) {
-                $data['errors']['imagenotfound'][] =  __('book.imagenotfound');
-                return $data;
+                $data['errors']['imagenotfound'] =  __('book.imageNotFound');
             } else {
-                $images->delete();
-                $imagestore = Storage::disk('public')->delete($images->image);
-                if ($imagestore == true) {
-                    $data['message']['imagedeleted'] = __('book.imagedeleted');
-                    return $data;
+                // $deleteStoreImages = Storage::disk('public')->delete($images->image);
+                // $image = $images->where('id', $input['image_id'])->delete();
+                if (Storage::disk('public')->delete($images->image) && $images->where('id', $input['image_id'])->delete()) {
+                    $data['message']['imagedeleted'] = __('book.imageDeleted');
                 }
             }
         }
+        return $data;
     }
 }

@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Route;
     Route::post('login', 'UserController@login');
 
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('logout','UserController@logout');
         Route::apiResource('books','BookController');
-        Route::delete('books/{id}/image', 'BookController@images');
+        Route::delete('books/{id}/remove-image', 'BookController@removeImage');
     });
     
 

@@ -42,11 +42,24 @@ class UserService
             }
         }
         else {
-            $data['errors']['user'][] = __('user.usernotfound');
+            $data['errors']['user'][] = __('user.userNotFound');
             return $data;
         }
 
         return $user;
+    }
+    public function logout()
+    {
+        $accessToken = Auth::user()->token();
+
+        \DB::table('oauth_refresh_tokens')
+            ->where('access_token_id', $accessToken->id)
+            ->update([
+                'revoked' => true
+            ]);
+        $accessToken->revoke();
+        $data['message'] = __('user.logoutSuccess');
+        return $data;
     }
    
 }

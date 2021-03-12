@@ -30,7 +30,7 @@ class signup extends FormRequest
     {
         $rules =  [
             'name'  => 'required|max:20',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|confirmed',
             'email' => 'required|email|max:255|unique:users,email,id',
             'agree_terms' => 'required|in:1,0 else',
         ];

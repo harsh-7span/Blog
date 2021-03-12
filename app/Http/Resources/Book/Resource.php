@@ -22,7 +22,7 @@ class Resource extends JsonResource
         $data['name'] = $this->name;
         foreach($this->images as $images)
         {
-            $data['images'][] =  $images['image'];    
+            $data['images'][] =  Storage::url($images['image']);    
         }
         $data['author'] = new UserResource($this->user);
         return $data;
