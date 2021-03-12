@@ -29,7 +29,7 @@ class login extends FormRequest
     {
         return [
             'email' => 'required|email|max:255',
-            'password' => 'required',
+            'password' => 'required|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/',
 
         ];
     }

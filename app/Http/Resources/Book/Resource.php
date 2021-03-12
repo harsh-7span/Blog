@@ -14,7 +14,8 @@ class Resource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    
+     public function toArray($request)
     {
         $data['id'] = $this->id;
         $data['code'] = $this->code;
@@ -25,6 +26,6 @@ class Resource extends JsonResource
             $data['images'][] =  Storage::url($images['image']);    
         }
         $data['author'] = new UserResource($this->user);
-        return $data;
+        return ['book' => $data];
     }
 }
