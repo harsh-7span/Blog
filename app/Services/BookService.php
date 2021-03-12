@@ -99,7 +99,7 @@ class BookService
     public function removeImage($id, $input)
     {
         $book = $this->bookObj->with('images')->find($id);
-        if ($book->images) {
+        if ($book->images == null) {
             $data['errors']['imageNotFound'] =  __('book.imageNotFound');
             return $data;
         }
@@ -108,7 +108,8 @@ class BookService
                 $data['errors']['imageNotFound'] =  __('book.imageNotFound');
             } else {
                 if (Storage::disk('public')->delete($images->image) && $images->where('id', $input['image_id'])->delete()) {
-                    $data['message']['imageDeleted'] = __('book.imageDeleted');
+                    $data['message']['imageDeleted'][] = __('book.imageDeleted');
+                    return $data;
                 }
             }
         }
