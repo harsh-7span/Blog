@@ -16,6 +16,7 @@
         "laravel/framework": "^7.0",
         "laravel/passport": "~9.0",
         "laravel/tinker": "^2.0",
+        "plank/laravel-mediable": "^5.0",
         "symfony/psr-http-message-bridge": "^2.1"
     },
     "require-dev": {

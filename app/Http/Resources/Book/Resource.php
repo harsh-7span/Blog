@@ -21,10 +21,7 @@ class Resource extends JsonResource
         $data['code'] = $this->code;
         $data['desc'] = $this->desc;
         $data['name'] = $this->name;
-        foreach($this->images as $images)
-        {
-            $data['images'][] =  Storage::url($images['image']);    
-        }
+        $data['images'] = $this->getMedia('gallery');
         $data['author'] = new UserResource($this->user);
         return ['book' => $data];
     }

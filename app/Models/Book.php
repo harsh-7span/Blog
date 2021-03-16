@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Image;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Plank\Mediable\Mediable;
 
 class Book extends Model
 {
+    use Mediable;
+    
     protected $fillable = [
-        'id','code', 'name','desc','user_id'
+        'code', 'name','desc','user_id'
     ];
 
     public function images()
