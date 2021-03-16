@@ -22,6 +22,7 @@ class Upsert extends FormRequest
             'name' => 'required',
             'dateOfbirth' => 'required|date|date_format:Y-m-d',
             'bio' => 'required|max:250',
+            'profile' => 'required'
         ];
         return $rules;
 

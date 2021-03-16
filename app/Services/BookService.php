@@ -12,10 +12,11 @@ use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Tag;
 use DB;
+use App\Traits\MediableUploader;
 
 class BookService
 {
-    use ApiResponser;
+    use ApiResponser, MediableUploader;
 
     private $bookObj;
 
@@ -52,12 +53,8 @@ class BookService
         }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
-                $images = new Image();
-                $file =  $image->getClientOriginalName();
-                $image->move(public_path() . '/upload', $file);
-                $images->image = $file;
-                $images->book_id = $book->id;
-                $images->save();
+                $uploadedMedia = $this->uploadFileViaObj($image, [ 'location' => 'books/' ]);
+                $book->attachMedia($uploadedMedia, 'gallery');
             }
         }
         return $book;
@@ -85,12 +82,8 @@ class BookService
         }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
-                $images = new Image();
-                $file =  $image->getClientOriginalName();
-                $image->move(public_path() . '/upload', $file);
-                $images->image = $file;
-                $images->book_id = $book->id;
-                $images->save();
+                $uploadedMedia = $this->uploadFileViaObj($image, [ 'location' => 'books/' ]);
+                $book->attachMedia($uploadedMedia, 'gallery');
             }
         }
         $book->update($input);
@@ -125,9 +118,7 @@ class BookService
             $images =  $image->delete();
         }
         $book =  $book->delete();
-        if ($book == true && $images == true) {
-            return $data['message']['book'] =  __('book.dataDeleted');
-        }
+        return [];
     }
     public function removeImage($id, $input)
     {

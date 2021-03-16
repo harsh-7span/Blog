@@ -11,10 +11,11 @@ use App\Traits\ApiResponser;
 use App\Models\Tag;
 use DB;
 use GuzzleHttp\Promise\Create;
+use App\Traits\MediableUploader;
 
 class AuthorService
 {
-    use ApiResponser;
+    use ApiResponser, MediableUploader;
 
     private $authorObj;
 
@@ -39,6 +40,10 @@ class AuthorService
                 $tag = Tag::firstOrCreate(['name' => $tags]);
                 $author->tags()->attach($tag->id);
             }
+        }
+        foreach($input['profile'] as $profile){
+            $uploadedMedia = $this->uploadFileViaObj($profile, [ 'location' => 'author/' ]);
+            $author->attachMedia($uploadedMedia, 'gallery');
         }
         return $author;
     }
@@ -65,6 +70,10 @@ class AuthorService
             }
         }
         $author->update($input);
+        foreach($input['profile'] as $profile){
+            $uploadedMedia = $this->uploadFileViaObj($profile, [ 'location' => 'author/' ]);
+            $author->attachMedia($uploadedMedia, 'gallery');
+        }
         return $author->where('id', $author->id)->with(['books'])->first();
     }
     public function delete($id)
