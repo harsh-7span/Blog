@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponser;
 use DB;
 
-class UserService
+class AuthService
 {
     use ApiResponser;
 
@@ -20,12 +20,8 @@ class UserService
     }
     public function register($inputs)
     {
-        $data = [
-            'name' => $inputs['name'],
-            'email' => $inputs['email'],
-            'password' => Hash::make($inputs['password']),
-        ];
-        $user = $this->userObj->create($data);
+        $inputs['password'] = Hash::make($inputs['password']);
+        $user = $this->userObj->create($inputs);
 
         
         return $user;

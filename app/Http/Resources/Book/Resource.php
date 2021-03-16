@@ -4,6 +4,7 @@ namespace App\Http\Resources\Book;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\User\Resource as UserResource;
+use App\Http\Resources\Author\Resource as AuthorResource;
 use Illuminate\Support\Facades\Storage;
 
 class Resource extends JsonResource
@@ -25,7 +26,14 @@ class Resource extends JsonResource
         {
             $data['images'][] =  Storage::url($images['image']);    
         }
-        $data['author'] = new UserResource($this->user);
+        foreach($this->tags as $tags)
+        {
+            $data['tags'][] = $tags->name;
+        }
+        foreach($this->authors as $authors)
+        {
+            $data['author'][] = new AuthorResource($authors);   
+        }
         return ['book' => $data];
     }
 }

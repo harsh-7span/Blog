@@ -5,19 +5,19 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\signup;
 use App\Http\Requests\User\login;
-use App\Services\UserService;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponser;
-use App\Http\Resources\User\Resource as UserResource;
+use App\Http\Resources\User\Resource as AuthResource;
 
-class UserController extends Controller
+class AuthController extends Controller
 {
     use ApiResponser;
 
     private $userService;
 
-    public function __construct(UserService $userService)
+    public function __construct(AuthService $userService)
     {
         $this->userService = $userService;
     }
@@ -30,7 +30,7 @@ class UserController extends Controller
         }else
         {
             $data =[
-                'user' => new UserResource($user),
+                'user' => new AuthResource($user),
                 'token' => $user->createToken('Laravel')->accessToken
             ];
             return $this->success($data, 200);
@@ -46,7 +46,7 @@ class UserController extends Controller
         }else
         {
             $data =[
-                'user' => new UserResource($user),
+                'user' => new AuthResource($user),
                 'token' => $user->createToken('Laravel')->accessToken
             ];
             return $this->success($data, 200);

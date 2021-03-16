@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Author;
 use App\Models\book;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponser;
 use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Tag;
 use DB;
 
 class BookService
@@ -24,16 +26,30 @@ class BookService
     public function collection($input = null)
     {
         if (!empty($input['name'])) {
-            $books = $this->bookObj->with(['images', 'user'])->where('name', 'like', '%' . $input['name'] . '%')->paginate(5);
+            $books = $this->bookObj->with(['images', 'user','authors'])->where('name', 'like', '%' . $input['name'] . '%')->paginate(5);
         } else {
-            $books = $this->bookObj->with(['images', 'user'])->paginate(5);
+            $books = $this->bookObj->with(['images', 'user','authors'])->paginate(5);
         }
         return $books;
     }
     public function store($input = null)
     {
-        $input['user_id'] = Auth::user()->id;
         $book = $this->bookObj->create($input);
+        if (!empty($input['author_id'])) {
+            foreach ($input['author_id'] as $author) {
+                $authors = Author::where('id', $author)->get();
+                foreach ($authors as $author) {
+                    $book->authors()->attach($author->id);
+                }
+            }
+        }
+
+        if (!empty($input['tag'])) {
+            foreach ($input['tag'] as $tags) {
+                $tag = Tag::firstOrCreate(['name' => $tags]);
+                $book->tags()->attach($tag->id);
+            }
+        }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
                 $images = new Image();
@@ -53,6 +69,20 @@ class BookService
             $data['errors']['book'][] =  __('book.bookNotFound');
             return $data;
         }
+        if (!empty($input['author_id'])) {
+            foreach ($input['author_id'] as $author) {
+                $authors = Author::where('id', $author)->get();
+                foreach ($authors as $author) {
+                    $book->authors()->attach($author->id);
+                }
+            }
+        }
+        if (!empty($input['tag'])) {
+            foreach ($input['tag'] as $tags) {
+                $tag = Tag::firstOrCreate(['name' => $tags]);
+                $book->tags()->attach($tag->id);
+            }
+        }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
                 $images = new Image();
@@ -64,11 +94,11 @@ class BookService
             }
         }
         $book->update($input);
-        return $book->where('id', $book->id)->with(['images', 'user'])->first();
+        return $book->where('id', $book->id)->with(['images', 'user','authors','tags'])->first();
     }
     public function show($id)
     {
-        $book = $this->bookObj->where('id', $id)->with(['images', 'user'])->first();
+        $book = $this->bookObj->where('id', $id)->with(['images', 'user', 'tags'])->first();
         if ($book == null) {
             $data['errors']['book'][] =  __('book.bookNotFound');
             return $data;
@@ -77,14 +107,17 @@ class BookService
     }
     public function delete($id)
     {
-        $book = $this->bookObj->where('id', $id)->with(['images', 'user'])->first();
+        $book = $this->bookObj->where('id', $id)->with(['images', 'user', 'tags'])->first();
 
         if ($book == null) {
             $data['errors']['book'][] =  __('book.bookNotFound');
             return $data;
         }
+        if ($book->tags !== null) {
+            $book->tags()->detach($book->tags->pluck('id'));
+        }
         if ($book->images == null) {
-            $data['errors']['imageNotFound'][] =  __('book.imageNotFound');
+            $data['errors']['imageNotFound'] =  __('book.imageNotFound');
             return $data;
         }
         foreach ($book->images as $image) {
@@ -93,7 +126,7 @@ class BookService
         }
         $book =  $book->delete();
         if ($book == true && $images == true) {
-            return $data['message']['book'][] =  __('book.dataDeleted');
+            return $data['message']['book'] =  __('book.dataDeleted');
         }
     }
     public function removeImage($id, $input)
@@ -114,5 +147,8 @@ class BookService
             }
         }
         return $data;
+    }
+    public function updateTag($id)
+    {
     }
 }
