@@ -21,9 +21,12 @@ class Book extends Model
         return $this->hasMany(Image::class);
 
     }
-
-    public function user()
+    public function authors()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(Author::class,'author_book','author_id','book_id');
+    }
+    public function tags()
+    {
+        return $this->morphToMany(tag::class,'taggables');
     }
 }
