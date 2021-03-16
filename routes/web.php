@@ -1,5 +1,6 @@
 <?php
 
+use Doctrine\DBAL\Driver\Middleware;
 use Illuminate\Support\Facades\Route;
 
 /*

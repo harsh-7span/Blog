@@ -1,8 +1,9 @@
 <?php 
 return 
 [
-    'filenotfound' => 'upload images not found',
-    'booknotfound' => 'book not found',
-    'datdeleted' => 'datadeletedsucessfully',
-    'imagesempty' => 'book images is empty',
+    'fileNotFound' => 'Upload Images Not Found',
+    'bookNotFound' => 'Book Not Found',
+    'dataDeleted' => 'Data Deleted Sucessfully',
+    'imageNotFound' => 'Images Is Not Found',
+    'imageDeleted' => 'Image Deleted Succesfully',
 ];

@@ -32,7 +32,7 @@ class Upsert extends FormRequest
             $rules =  [
                 'name' => 'required',
                 'desc' => 'required',
-                'image.*' => 'required|mimes:jpeg,png,jpg|max:4048',
+                'image.*' => 'mimes:jpeg,png,jpg|max:4048',
             ];
             return $rules;
         } else {
@@ -40,7 +40,7 @@ class Upsert extends FormRequest
                 'code' => 'required|max:3|unique:books,code,id',
                 'name' => 'required',
                 'desc' => 'required',
-                'image.*' => 'mimes:jpeg,png,jpg|max:4048',
+                'image.*' => 'required|mimes:jpeg,png,jpg|max:4048',
             ];
             return $rules;
         }

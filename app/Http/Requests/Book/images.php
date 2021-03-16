@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Book;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use App\Traits\ApiResponser;
+use App\Models\Book;
 
-class signup extends FormRequest
+class images extends FormRequest
 {
     use ApiResponser;
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -28,13 +28,9 @@ class signup extends FormRequest
      */
     public function rules()
     {
-        $rules =  [
-            'name'  => 'required|max:20',
-            'password' => 'required|min:8|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/|confirmed',
-            'email' => 'required|email|max:255|unique:users,email,id',
-            'agree_terms' => 'required|in:1,0 else',
+        return [
+            'image_id' => 'required',
         ];
-        return $rules;
     }
 
     protected function failedValidation(Validator $validator)

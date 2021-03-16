@@ -52,4 +52,9 @@ class UserController extends Controller
             return $this->success($data, 200);
         }
     }
+    public function logout()
+    {
+      $data = $this->userService->logout();
+      return $this->success($data, 200);
+    } 
 }
