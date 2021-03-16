@@ -18,6 +18,7 @@ class Resource extends JsonResource
         $data['bio'] = $this->bio;
         $data['dateOfbirth'] = $this->dateOfbirth;
         $data['dateOfdeth'] = $this->dateOfdeth;
+        $data['images'] = $this->getMedia('gallery');
         foreach($this->tags as $tags)
         {
             $data['tags'][] = $tags->name;
