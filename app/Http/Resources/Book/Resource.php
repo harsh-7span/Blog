@@ -24,7 +24,7 @@ class Resource extends JsonResource
         $data['name'] = $this->name;
         foreach($this->images as $images)
         {
-            $data['images'][] =  Storage::url($images['image']);    
+            $data['images'][] =  Storage::url($images['url']);    
         }
         foreach($this->tags as $tags)
         {

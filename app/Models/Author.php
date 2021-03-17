@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Author extends Model
 {
     protected $fillable = [
-        'name','bio','dateOfbirth','dateOfdeth',
+       'url','name','bio','dateOfbirth','dateOfdeth',
     ]; 
 
     public function books()
@@ -17,5 +17,10 @@ class Author extends Model
     public function tags()
     {
         return $this->morphToMany(tag::class,'taggables');
+    }
+    public function images()
+    {
+        
+        return $this->morphMany(image::class,'imageable');   
     }
 }

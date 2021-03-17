@@ -3,6 +3,8 @@
 namespace App\Http\Resources\Author;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+
 
 class Resource extends JsonResource
 {
@@ -21,6 +23,10 @@ class Resource extends JsonResource
         foreach($this->tags as $tags)
         {
             $data['tags'][] = $tags->name;
+        }
+        foreach($this->images as $images)
+        {
+            $data['images'][] =  Storage::url($images['url']);    
         }
         return $data;
     }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Book;
 use App\Traits\ApiResponser;
 use App\Models\Tag;
+use App\Models\Image;
 use DB;
 use GuzzleHttp\Promise\Create;
 
@@ -40,6 +41,16 @@ class AuthorService
                 $author->tags()->attach($tag->id);
             }
         }
+        if (isset($input['image'])) {
+            foreach ($input['image'] as $image) {
+                $images = new image();
+                $file =  $image->getClientOriginalName();
+                $image->move(public_path() . '/upload/Author', date('d-m-Y-H-i').$file);
+                $images->url = $file;
+                $author->images()->save($images);
+
+            }   
+        }
         return $author;
     }
     public function show($id)
@@ -62,6 +73,15 @@ class AuthorService
             foreach ($input['tag'] as $tags) {
                 $tag = Tag::updateOrCreate (['name' => $tags]);
                 $author->tags()->attach($tag->id);
+            }
+        }
+        if (isset($input['image'])) {
+            foreach ($input['image'] as $image) {
+                $images = new image();
+                $file =  $image->getClientOriginalName();
+                $image->move(public_path() . '/upload/Author',date('d-m-Y-H-i').$file);
+                $images->url = $file;
+                $author->imageable()->save($images);
             }
         }
         $author->update($input);

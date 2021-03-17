@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponser;
 use App\Models\Image;
 use Illuminate\Support\Facades\Storage;
+use App\Library\AssetHelper;
 use App\Models\Tag;
 use DB;
 
@@ -32,6 +33,15 @@ class BookService
         }
         return $books;
     }
+    public function resource($id)
+    {
+        $book = $this->bookObj->where('id', $id)->with(['images', 'user','authors','tags'])->find($id);
+
+        if ($book == null) {
+            $data['errors']['book'][] =  __('book.bookNotFound');
+            return $data;
+        }
+    }
     public function store($input = null)
     {
         $book = $this->bookObj->create($input);
@@ -52,19 +62,14 @@ class BookService
         }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
-                $images = new Image();
-                $file =  $image->getClientOriginalName();
-                $image->move(public_path() . '/upload', $file);
-                $images->image = $file;
-                $images->book_id = $book->id;
-                $images->save();
-            }
+            AssetHelper::uploadAssets($image,$book,$images);
+        }
         }
         return $book;
     }
     public function update($id, $input)
     {
-        $book = $this->bookObj->with('images')->find($id);
+        $book = $this->resource($id);
         if ($book == null) {
             $data['errors']['book'][] =  __('book.bookNotFound');
             return $data;
@@ -85,16 +90,13 @@ class BookService
         }
         if (isset($input['image'])) {
             foreach ($input['image'] as $image) {
-                $images = new Image();
-                $file =  $image->getClientOriginalName();
-                $image->move(public_path() . '/upload', $file);
-                $images->image = $file;
-                $images->book_id = $book->id;
-                $images->save();
+                AssetHelper::uploadAssets($image,$book,$images);
+
             }
         }
         $book->update($input);
-        return $book->where('id', $book->id)->with(['images', 'user','authors','tags'])->first();
+        
+        return $this->resource($book->id);
     }
     public function show($id)
     {

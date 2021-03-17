@@ -31,7 +31,9 @@ class Upsert extends FormRequest
                 'code' => 'required|max:3|unique:books,code,id',
                 'name' => 'required',
                 'desc' => 'required',
+                'image' =>'required',
                 'image.*' => 'required|mimes:jpeg,png,jpg|max:4048',
+                'author_id' => 'required',
             ];
             return $rules;
         }

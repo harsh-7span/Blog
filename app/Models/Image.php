@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Book;
 
-class Image extends Model
+class image extends Model
 {
     protected $fillable = [
-        'book_id','image',
+        'url','imageable_type','imageable_id'
     ];
 
-    public function book()
+    public function imageable()
     {
-        return $this->belongsTo(Book::class);
+        return $this->morphTo();
     }
 }
